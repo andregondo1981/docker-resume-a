@@ -23,14 +23,15 @@ jobs:
             docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a
 
   deploy:
+   needs: buildd
    runs-on: ubuntu-latest
   steps:
     - name: SSH to Server
-      uses: applebot/ssh-actions@v1
+      uses: appleboy/ssh-action@v1
       with:
         host: ${{secrets.HOST}}
         username: ${{secrets.USERNAME}}
-        key: ${{ secrets.KEY}}
+        key: ${{secrets.KEY}}
        #port: ${{secrets.PORT}}
         script: |
                 docker rm -f resume
