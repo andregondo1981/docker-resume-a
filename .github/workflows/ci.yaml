@@ -26,7 +26,7 @@ jobs:
    runs-on: ubuntu-latest
   steps:
     - name: SSH to Server
-    - uses: applebot/ssh-actions@v1
+      uses: applebot/ssh-actions@v1
       with:
         host: ${{secrets.HOST}}
         username: ${{secrets.USERNAME}}
