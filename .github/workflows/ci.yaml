@@ -27,13 +27,11 @@ jobs:
    runs-on: ubuntu-latest
    steps:
     - name: SSH to Server
-      uses: appleboy/ssh-action@v1
-      with:
-        host: ${{secrets.HOST}}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-       #port: ${{secrets.PORT}}
-        script: |
-                docker rm -f resume
-                docker run -d --name resume -p 8080:5001 ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
-     
+        appleboy/ssh-action@v1
+  with:
+    host: ${{ secrets.HOST }}
+    username: ${{ secrets.USERNAME }}
+    key: ${{ secrets.KEY }}
+    script: |
+      docker rm -f resume || true
+      docker run -d --name resume -p 8080:5001 ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a:${{ github.run_number }}
