@@ -40,5 +40,6 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-                docker rm -f resume || true
-                docker run -d --name resume -p 8080:5001 ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a
+              docker rm -f resume || true
+              docker pull ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a:${{ github.run_number }}
+              docker run -d --name resume -p 8080:5001 ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a
