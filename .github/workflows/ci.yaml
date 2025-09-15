@@ -22,6 +22,13 @@ jobs:
             docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
             docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a
 
+      - name: Setup SSH
+        run: |
+          echo "${{ secrets.KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+       
+        
+
   deploy:
    runs-on: ubuntu-latest
    steps:
