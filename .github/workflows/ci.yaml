@@ -15,7 +15,7 @@ jobs:
       - name: Build image
         run: |
               docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}} .
-              docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a .
+              docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:latest .
       - name: Push image 
         run: |
             docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
