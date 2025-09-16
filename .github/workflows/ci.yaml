@@ -20,7 +20,6 @@ jobs:
         run: |
             docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
             docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
-            docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a
 
       - name: Setup SSH
         run: |
