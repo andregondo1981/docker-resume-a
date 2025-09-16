@@ -9,17 +9,18 @@ jobs:
   
   build:
    
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-${{ env.IMAGE_TAG }} 
     steps:
       - uses: actions/checkout@v4
       - name: Build image
         run: |
-            docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:latest .
+          TAG=${GITHUB_SHA::8} # first 8 chars of commit SHA
+            docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:$TAG .
       - name: Push image 
         run: |
             docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
-            docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:latest
-
+            docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:$TAG
+            echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
       - name: Setup SSH
         run: |
           echo "${{ secrets.KEY }}" > private_key.pem
@@ -28,7 +29,7 @@ jobs:
         
 
   deploy:
-   runs-on: ubuntu-latest
+   runs-on: ubuntu-${{ env.IMAGE_TAG }}
    steps:
     - name: SSH to Server
       uses: appleboy/ssh-action@v0.1.7
@@ -39,5 +40,5 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
                docker rm -f resume || true
-               docker pull ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a:latest
-               docker run -d --name resume -p 8080:5001 ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a:latest
+               docker pull ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a:${{ env.IMAGE_TAG }}
+               docker run -d --name resume -p 8080:5001 ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a:${{ env.IMAGE_TAG }}
