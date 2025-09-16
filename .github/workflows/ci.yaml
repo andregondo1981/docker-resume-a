@@ -1,4 +1,6 @@
+
 name: CI
+
 on:
   push:
     branches: [ "main" ]
@@ -13,31 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build image
-        run: |
-              docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}} .
-              docker build --no-cache -t ${{secrets.REGISTRY_USERNAME}}/docker-resume-a .
+        run: | 
+              docker build -t ${{secrets.REGISTRY_USER}}/portfolio:${{github.run_number}} .
+              docker build -t ${{secrets.REGISTRY_USER}}/portfolio .
       - name: Push image 
         run: |
-            docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
-            docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
-            docker push ${{secrets.REGISTRY_USERNAME}}/docker-resume-a
-      - name: Setup SSH
-        run: |
-          echo "${{ secrets.KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-       
-        
+            docker login -u ${{secrets.REGISTRY_USER}} -p ${{secrets.REGISTRY_PASS}}
+            docker push ${{secrets.REGISTRY_USER}}/portfolio:${{github.run_number}}
+            docker push ${{secrets.REGISTRY_USER}}/portfolio
 
   deploy:
-   runs-on: ubuntu-latest
-   steps:
-    - name: SSH to Server
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST }} 
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        #port: ${{ secrets.PORT }}
-        script: |
-              docker rm -f resume || true
-              docker run -d --name resume -p 8080:5001 ${{ secrets.REGISTRY_USERNAME }}/docker-resume-a
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH to Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+         # port: ${{ secrets.PORT }}
+          script: |
+                  docker rm -f resume
+                  docker run -d --name resume -p 8080:5001 ${{secrets.REGISTRY_USER}}/portfolio:${{github.run_number}}
