@@ -40,7 +40,6 @@ jobs:
                   docker run -d --name resume -p 8080:5001 ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
 
           scan:
-    steps:
       - name: Install Trivy
         run: |
           sudo apt-get update && sudo apt-get install -y wget apt-transport-https gnupg lsb-release
