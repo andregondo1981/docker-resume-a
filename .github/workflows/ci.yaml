@@ -39,9 +39,7 @@ jobs:
                   docker rm -f resume || true
                   docker run -d --name resume -p 8080:5001 ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
 
-                   scan:
-    needs: build
-    runs-on: ubuntu-latest
+          scan:
     steps:
       - name: Install Trivy
         run: |
