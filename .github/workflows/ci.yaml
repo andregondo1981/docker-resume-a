@@ -32,9 +32,9 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
          # port: ${{ secrets.PORT }}
           script: |
-                  docker rm -f resume
+                  docker rm -f resume || true
                   docker run -d --name resume -p 8080:5001 ${{secrets.REGISTRY_USERNAME}}/docker-resume-a:${{github.run_number}}
