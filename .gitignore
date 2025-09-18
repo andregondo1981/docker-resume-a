@@ -1,3 +1,4 @@
 __pycache__/
 venv/
 terraform.tfstate
+docker-cicd-keypair.pemdocker-cicd-keypair.pem
